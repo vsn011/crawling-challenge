@@ -35,9 +35,10 @@ if args.schedule:
     while True:
         start_time = time.time()
 
+        # For testing, slice the list, i.e. [0:100]
         collection.insert_one({
             "timestamp": int(time.time()),
-            "listings": search_listings()[0:100],
+            "listings": search_listings(),
         })
 
         time.sleep(args.schedule - ((time.time() - start_time) % args.schedule))
