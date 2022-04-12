@@ -3,10 +3,10 @@ services:
   scrape:
     build: .
     container_name: scrape
-    command: -o /output/result.json -s 10
+    command: -o /output/result.json 
     depends_on:
       - mongo
-    user: '1000:1001'
+    # user: '1000:1001'
     environment:
       IMMOWELT_KEY: aW1tb3dlbHRfbW9iaWxlX2FwcF9pb3NfMjo5UXVHa20xM1k0WEZPZHFzZW05eGh4RVVKejR2UWdEWA==
     volumes:

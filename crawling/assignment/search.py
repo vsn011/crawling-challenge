@@ -1,3 +1,8 @@
+import json
+import logging
+import requests
+import time
+
 from assignment.auth import ImmoweltAccessToken
 from assignment import config
 
