@@ -35,10 +35,10 @@ if args.schedule:
     while True:
         start_time = time.time()
 
-        items = search_listings()
-
-        # Write to Mongo
-        collection.insert_one(items)
+        collection.insert_one({
+            "timestamp": int(time.time()),
+            "listings": search_listings()[0:100],
+        })
 
         time.sleep(args.schedule - ((time.time() - start_time) % args.schedule))
 
