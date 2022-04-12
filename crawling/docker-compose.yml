@@ -3,7 +3,9 @@ services:
   scrape:
     build: .
     container_name: scrape
-    command: -o /output/result.json
+    command: -o /output/result.json -s 10
+    depends_on:
+      - mongo
     user: '1000:1001'
     environment:
       IMMOWELT_KEY: aW1tb3dlbHRfbW9iaWxlX2FwcF9pb3NfMjo5UXVHa20xM1k0WEZPZHFzZW05eGh4RVVKejR2UWdEWA==
@@ -22,7 +24,10 @@ services:
 
   # mongo-express:
   #   image: mongo-express
-  #   restart: always
+  #   container_name: mongo_express
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - mongo
   #   ports:
   #     - 8081:8081
   #   environment:

@@ -2,11 +2,22 @@ import argparse
 import json
 import logging
 import os
+import pymongo
 import requests
+import signal
 import time
 
-from assignment import config
-from assignment.auth import ImmoweltAccessToken
+from assignment.search import search_listings
+
+keep_runing = True
+
+def exit_gracefully():
+    logging.info("exitting gracefully")
+    keep_running = False
+
+signal.signal(signal.SIGINT, exit_gracefully)
+signal.signal(signal.SIGTERM, exit_gracefully)
+signal.signal(signal.SIGHUP, exit_gracefully)
 
 parser = argparse.ArgumentParser(description="Scrape Immowelt API")
 parser.add_argument("--output", "-o", help="Location to save the result JSON")
@@ -17,58 +28,23 @@ args = parser.parse_args()
 logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO)
 
 if args.schedule:
+    client = pymongo.MongoClient("mongodb://root:example@mongo:27017/")
+    db = client["crawling"]
+    collection = db["EstateSearch"]
+
     while True:
         start_time = time.time()
 
-        logging.info("doing something that takes 3 seconds")
-        time.sleep(3)
+        items = search_listings()
+
+        # Write to Mongo
+        collection.insert_one(items)
 
         time.sleep(args.schedule - ((time.time() - start_time) % args.schedule))
 
 else:
-    access_token = ImmoweltAccessToken()
-
-    offset = 0
-    count = float("inf")
-    page_size = 1000
-    url = "https://api.immowelt.com/estatesearch/EstateSearch/v1/Search"
-
-    items = []
-
-    while offset < count:
-        logging.info(f"{offset}/{count}")
-
-        payload = json.dumps(
-            {
-                "construction": {},
-                "general": {
-                    "category": [],
-                    "distributionType": config.distribution_type,
-                    "equipment": [],
-                    "estateType": config.estate_types,
-                },
-                "location": {"geo": {"locationId": config.location_ids}},
-                "offset": offset,
-                "pagesize": page_size,
-                "pricing": {},
-                "sort": "SortByCreateDate",
-            }
-        )
-
-        headers = {
-            "accept": "application/json",
-            "content-type": "application/json",
-            "authorization": f"Bearer {access_token.token}",
-        }
-
-        response = requests.request(
-            "POST", url, headers=headers, data=payload
-        ).json()
-
-        count = int(response["count"])
-        offset = int(response["offset"]) + page_size
-        items += response["items"]
-        time.sleep(5)
+    # Call search part
+    items = search_listings()
 
     with open(args.output, "w") as fp:
         json.dump(items, fp, indent=4)
