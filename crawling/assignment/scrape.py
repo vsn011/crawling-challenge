@@ -9,6 +9,7 @@ from assignment import config
 from assignment.auth import ImmoweltAccessToken
 
 parser = argparse.ArgumentParser(description="Scrape Immowelt API")
+parser.add_argument("--output", "-o", help="Location to save the result JSON")
 parser.add_argument("--verbose", "-v", action=argparse.BooleanOptionalAction, help="Enable debug logs")
 parser.add_argument("--schedule", "-s", type=int, help="Scrape schedule in seconds")
 args = parser.parse_args()
@@ -69,5 +70,5 @@ else:
         items += response["items"]
         time.sleep(5)
 
-    with open("result.json", "w") as fp:
+    with open(args.output, "w") as fp:
         json.dump(items, fp, indent=4)

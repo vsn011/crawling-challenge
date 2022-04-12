@@ -3,11 +3,12 @@ services:
   scrape:
     build: .
     container_name: scrape
-    # command: --verbose
-    # command: -h
-    command: --schedule 6
+    command: -o /output/result.json
+    user: '1000:1001'
     environment:
       IMMOWELT_KEY: aW1tb3dlbHRfbW9iaWxlX2FwcF9pb3NfMjo5UXVHa20xM1k0WEZPZHFzZW05eGh4RVVKejR2UWdEWA==
+    volumes:
+      - '$PWD/output:/output'
 
   # mongo:
   #   image: mongo
