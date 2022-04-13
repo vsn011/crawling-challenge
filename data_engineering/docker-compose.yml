@@ -1,0 +1,10 @@
+version: '3.5'
+services:
+  data_engineering:
+    build: .
+    container_name: data_engineering
+    command: -i /data_engineering/files  -o /output/result.json 
+    # user: '1000:1000'
+    volumes:
+      - './output:/output'
+

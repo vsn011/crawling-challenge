@@ -1,0 +1,1 @@
+key_columns = ['living_space','floor', 'rooms', 'zip_code', 'sale_type', 'price']
