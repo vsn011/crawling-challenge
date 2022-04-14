@@ -7,7 +7,7 @@ pd.options.mode.chained_assignment = None
 
 
 class Duplicate_finder:
-    """Class for keeping track of the access token."""
+    """Class for finding duplicate listings in jsonl files."""
 
 
     def __init__(self, path, key_columns):
