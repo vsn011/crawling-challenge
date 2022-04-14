@@ -49,6 +49,6 @@ def search_listings():
         count = int(response["count"])
         offset = int(response["offset"]) + page_size
         items += response["items"]
-        #time.sleep(5)
+        time.sleep(5)
 
     return items
